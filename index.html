@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Houston Gin Market Analysis</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0f172a 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .header-icon {
+            width: 3rem;
+            height: 3rem;
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .header-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header-subtitle {
+            color: #cbd5e1;
+            font-size: 1.125rem;
+            margin-top: 0.5rem;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .metric-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+        }
+        
+        .metric-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .metric-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: linear-gradient(45deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .metric-label {
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+        
+        .metric-growth {
+            font-size: 0.75rem;
+            color: #22c55e;
+            font-weight: 500;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            padding: 0.5rem;
+            margin: 2rem 0;
+        }
+        
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            background: transparent;
+            color: #cbd5e1;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tab-button:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .tab-button.active {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .section-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        
+        .insight-card {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .insight-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .insight-text {
+            font-size: 0.875rem;
+            color: #cbd5e1;
+        }
+        
+        .green-insight {
+            background: linear-gradient(45deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.1));
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+        
+        .green-insight .insight-title {
+            color: #22c55e;
+        }
+        
+        .blue-insight {
+            background: linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .blue-insight .insight-title {
+            color: #3b82f6;
+        }
+        
+        .purple-insight {
+            background: linear-gradient(45deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.1));
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        
+        .purple-insight .insight-title {
+            color: #8b5cf6;
+        }
+        
+        .yellow-insight {
+            background: linear-gradient(45deg, rgba(234, 179, 8, 0.1), rgba(245, 158, 11, 0.1));
+            border: 1px solid rgba(234, 179, 8, 0.2);
+        }
+        
+        .yellow-insight .insight-title {
+            color: #eab308;
+        }
+        
+        .amber-insight {
+            background: linear-gradient(45deg, rgba(245, 158, 11, 0.1), rgba(251, 146, 60, 0.1));
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+        
+        .amber-insight .insight-title {
+            color: #f59e0b;
+        }
+        
+        .competitor-item {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .competitor-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+        
+        .competitor-name {
+            font-size: 1.125rem;
+            font-weight: bold;
+        }
+        
+        .competitor-type {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .competitor-share {
+            text-align: right;
+            min-width: 100px;
+        }
+        
+        .share-value {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+        
+        .share-bar {
+            width: 8rem;
+            height: 0.5rem;
+            background: #374151;
+            border-radius: 9999px;
+            margin-top: 0.25rem;
+            overflow: hidden;
+        }
+        
+        .share-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            border-radius: 9999px;
+        }
+        
+        .distillery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .distillery-card {
+            padding: 1.5rem;
+            background: linear-gradient(45deg, rgba(30, 41, 59, 0.5), rgba(51, 65, 85, 0.5));
+            border: 1px solid rgba(100, 116, 139, 0.3);
+            border-radius: 0.5rem;
+        }
+        
+        .distillery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+        
+        .distillery-name {
+            font-size: 1.125rem;
+            font-weight: bold;
+        }
+        
+        .distillery-location {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            background: rgba(100, 116, 139, 0.3);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+        
+        .distillery-focus {
+            color: #cbd5e1;
+            font-size: 0.875rem;
+        }
+        
+        .opportunity-item {
+            padding: 1.5rem;
+            background: linear-gradient(45deg, rgba(30, 41, 59, 0.5), rgba(51, 65, 85, 0.5));
+            border: 1px solid rgba(100, 116, 139, 0.3);
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .opportunity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .opportunity-title {
+            font-size: 1.125rem;
+            font-weight: bold;
+        }
+        
+        .opportunity-score {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .score-green { color: #22c55e; }
+        .score-yellow { color: #eab308; }
+        .score-orange { color: #f97316; }
+        
+        .progress-bar {
+            width: 100%;
+            height: 0.75rem;
+            background: #374151;
+            border-radius: 9999px;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 9999px;
+        }
+        
+        .progress-green {
+            background: linear-gradient(45deg, #22c55e, #16a34a);
+        }
+        
+        .progress-yellow {
+            background: linear-gradient(45deg, #eab308, #f59e0b);
+        }
+        
+        .progress-orange {
+            background: linear-gradient(45deg, #f97316, #ea580c);
+        }
+        
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .recommendation-card {
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+        }
+        
+        .recommendation-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .recommendation-icon {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .recommendation-title {
+            font-size: 1.125rem;
+            font-weight: bold;
+        }
+        
+        .recommendation-text {
+            color: #cbd5e1;
+            font-size: 0.875rem;
+        }
+        
+        .projections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .projection-card {
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+        
+        .projection-year {
+            font-size: 1.875rem;
+            font-weight: bold;
+            color: #22c55e;
+            margin-bottom: 0.5rem;
+        }
+        
+        .projection-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .projection-subtitle {
+            font-size: 0.875rem;
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+        
+        .projection-details {
+            text-align: left;
+        }
+        
+        .projection-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .projection-label {
+            color: #94a3b8;
+        }
+        
+        .executive-summary {
+            padding: 1.5rem;
+            background: linear-gradient(45deg, rgba(16, 185, 129, 0.1), rgba(20, 184, 166, 0.1));
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 0.5rem;
+            margin-top: 2rem;
+        }
+        
+        .summary-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #10b981;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .summary-text {
+            font-size: 0.875rem;
+            color: #cbd5e1;
+            margin-bottom: 0.75rem;
+        }
+        
+        .summary-strong {
+            color: white;
+            font-weight: bold;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="header-icon">
+                    <i data-lucide="map-pin"></i>
+                </div>
+                <div>
+                    <h1 class="header-title">Houston Gin Market Analysis</h1>
+                    <p class="header-subtitle">Strategic expansion opportunity for Americanized gin products</p>
+                </div>
+            </div>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-content">
+                        <div class="metric-icon">
+                            <i data-lucide="users"></i>
+                        </div>
+                        <div>
+                            <div class="metric-value">2.3M</div>
+                            <div class="metric-label">Population</div>
+                        </div>
+                    </div>
+                    <div class="metric-growth">+1.2% annually</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-content">
+                        <div class="metric-icon">
+                            <i data-lucide="dollar-sign"></i>
+                        </div>
+                        <div>
+                            <div class="metric-value">$54K</div>
+                            <div class="metric-label">Median Income</div>
+                        </div>
+                    </div>
+                    <div class="metric-growth">Above national avg</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-content">
+                        <div class="metric-icon">
+                            <i data-lucide="trending-up"></i>
+                        </div>
+                        <div>
+                            <div class="metric-value">35%</div>
+                            <div class="metric-label">Young Adults (21-40)</div>
+                        </div>
+                    </div>
+                    <div class="metric-growth">Premium target</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-content">
+                        <div class="metric-icon">
+                            <i data-lucide="award"></i>
+                        </div>
+                        <div>
+                            <div class="metric-value">12+</div>
+                            <div class="metric-label">Craft Distilleries</div>
+                        </div>
+                    </div>
+                    <div class="metric-growth">Growing market</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-button active" data-tab="overview">Market Overview</button>
+            <button class="tab-button" data-tab="competition">Competition</button>
+            <button class="tab-button" data-tab="demographics">Demographics</button>
+            <button class="tab-button" data-tab="opportunity">Opportunity</button>
+        </div>
+        
+        <div id="overview" class="tab-content active">
+            <div class="section-card">
+                <h2 class="section-title">
+                    <i data-lucide="trending-up"></i>
+                    Global Gin Market Growth
+                </h2>
+                <div class="section-grid">
+                    <div class="chart-container">
+                        <canvas id="globalMarketChart"></canvas>
+                    </div>
+                    <div>
+                        <div class="green-insight insight-card">
+                            <div class="insight-title">5.2% CAGR</div>
+                            <div class="insight-text">Expected annual growth through 2032</div>
+                        </div>
+                        <div class="blue-insight insight-card">
+                            <div class="insight-title">$26.8B</div>
+                            <div class="insight-text">Projected market size by 2032</div>
+                        </div>
+                        <div class="purple-insight insight-card">
+                            <div class="insight-title">Premium Focus</div>
+                            <div class="insight-text">Growing demand for craft & premium gin</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section-card">
+                <h2 class="section-title">US Gin Market Trajectory</h2>
+                <div class="section-grid">
+                    <div class="chart-container">
+                        <canvas id="usMarketChart"></canvas>
+                    </div>
+                    <div>
+                        <div class="yellow-insight insight-card">
+                            <div class="insight-title">Market Recovery</div>
+                            <div class="insight-text">Gin saw volume growth during pandemic for first time since 2009</div>
+                        </div>
+                        <div class="blue-insight insight-card">
+                            <div class="insight-title">$1.7B by 2029</div>
+                            <div class="insight-text">US market projected to reach $1.7 billion</div>
+                        </div>
+                        <div class="green-insight insight-card">
+                            <div class="insight-title">Premium Growth</div>
+                            <div class="insight-text">Craft and premium segments showing strongest growth</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section-card">
+                <h2 class="section-title">Gin Category Breakdown</h2>
+                <div class="section-grid">
+                    <div class="chart-container">
+                        <canvas id="ginTypesChart"></canvas>
+                    </div>
+                    <div>
+                        <div class="amber-insight insight-card">
+                            <div class="insight-title">Opportunity</div>
+                            <div class="insight-text">Americanized gin represents an underserved niche with growth potential</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="competition" class="tab-content">
+            <div class="section-card">
+                <h2 class="section-title">Current Market Leaders</h2>
+                <div class="competitor-item">
+                    <div class="competitor-info">
+                        <div class="competitor-name">Seagrams</div>
+                        <span class="competitor-type" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6;">National</span>
+                    </div>
+                    <div class="competitor-share">
+                        <div class="share-value">16%</div>
+                        <div class="share-bar">
+                            <div class="share-fill" style="width: 40%;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="competitor-item">
+                    <div class="competitor-info">
+                        <div class="competitor-name">Bombay Sapphire</div>
+                        <span class="competitor-type" style="background: rgba(139, 92, 246, 0.2); color: #8b5cf6;">International</span>
+                    </div>
+                    <div class="competitor-share">
+                        <div class="share-value">14%</div>
+                        <div class="share-bar">
+                            <div class="share-fill" style="width: 35%;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="competitor-item">
+                    <div class="competitor-info">
+                        <div class="competitor-name">Tanqueray</div>
+                        <span class="competitor-type" style="background: rgba(139, 92, 246, 0.2); color: #8b5cf6;">International</span>
+                    </div>
+                    <div class="competitor-share">
+                        <div class="share-value">12%</div>
+                        <div class="share-bar">
+                            <div class="share-fill" style="width: 30%;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="competitor-item">
+                    <div class="competitor-info">
+                        <div class="competitor-name">Hendricks</div>
+                        <span class="competitor-type" style="background: rgba(34, 197, 94, 0.2); color: #22c55e;">Premium</span>
+                    </div>
+                    <div class="competitor-share">
+                        <div class="share-value">8%</div>
+                        <div class="share-bar">
+                            <div class="share-fill" style="width: 20%;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="competitor-item">
+                    <div class="competitor-info">
+                        <div class="competitor-name">Texas Local Brands</div>
+                        <span class="competitor-type" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">Craft</span>
+                    </div>
+                    <div class="competitor-share">
+                        <div class="share-value">6%</div>
+                        <div class="share-bar">
+                            <div class="share-fill" style="width: 15%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section-card">
+                <h2 class="section-title">Texas Distillery Landscape</h2>
+                <div class="distillery-grid">
+                    <div class="distillery-card">
+                        <div class="distillery-header">
+                            <h3 class="distillery-name">Avonak Distillery</h3>
+                            <div class="distillery-location">Houston</div>
+                        </div>
+                        <p class="distillery-focus">Small batch craft spirits</p>
+                    </div>
+                    
+                    <div class="distillery-card">
+                        <div class="distillery-header">
+                            <h3 class="distillery-name">Yellow Rose Distilling</h3>
+                            <div class="distillery-location">Houston</div>
+                        </div>
+                        <p class="distillery-focus">Premium spirits</p>
+                    </div>
+                    
+                    <div class="distillery-card">
+                        <div class="distillery-header">
+                            <h3 class="distillery-name">Giant Texas Distillers</h3>
+                            <div class="distillery-location">Houston area</div>
+                        </div>
+                        <p class="distillery-focus">Bourbon & Rye (expanding)</p>
+                    </div>
+                    
+                    <div class="distillery-card">
+                        <div class="distillery-header">
+                            <h3 class="distillery-name">Dripping Springs</h3>
+                            <div class="distillery-location">Austin area</div>
+                        </div>
+                        <p class="distillery-focus">Traditional gin</p>
+                    </div>
+                </div>
+                
+                <div class="green-insight insight-card">
+                    <h3 class="insight-title">Market Gap Identified</h3>
+                    <p class="insight-text">Limited presence of Americanized gin products specifically tailored to US palates. Most Texas distilleries focus on whiskey/bourbon with minimal gin offerings.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="demographics" class="tab-content">
+            <div class="section-card">
+                <h2 class="section-title">Gin Consumer Demographics</h2>
+                <div class="section-grid">
+                    <div class="chart-container">
+                        <canvas id="demographicsChart"></canvas>
+                    </div>
+                    <div>
+                        <div class="purple-insight insight-card">
+                            <div class="insight-title">59%</div>
+                            <div class="insight-text">Ages 18-39 (Primary Target)<br><small>Highest consumption & premium interest</small></div>
+                        </div>
+                        <div class="green-insight insight-card">
+                            <div class="insight-title">Houston Advantage</div>
+                            <div class="insight-text">35% population aged 21-40<br><small>Above national average for target demo</small></div>
+                        </div>
+                        <div class="amber-insight insight-card">
+                            <div class="insight-title">Premium Trend</div>
+                            <div class="insight-text">Young adults drive craft adoption<br><small>Willing to pay premium for quality</small></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section-card">
+                <h2 class="section-title">Houston Market Characteristics</h2>
+                <div class="section-grid">
+                    <div class="blue-insight insight-card">
+                        <div class="insight-title">2.3M</div>
+                        <div style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem;">Metro Population</div>
+                        <div class="insight-text">4th largest US city, diverse consumer base</div>
+                    </div>
+                    <div class="green-insight insight-card">
+                        <div class="insight-title">$54K</div>
+                        <div style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem;">Median Income</div>
+                        <div class="insight-text">Growing disposable income for premium products</div>
+                    </div>
+                    <div class="purple-insight insight-card">
+                        <div class="insight-title">Diverse</div>
+                        <div style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem;">Cultural Mix</div>
+                        <div class="insight-text">Open to new flavors and products</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="opportunity" class="tab-content">
+            <div class="section-card">
+                <h2 class="section-title">Market Opportunity Assessment</h2>
+                
+                <div class="opportunity-item">
+                    <div class="opportunity-header">
+                        <h3 class="opportunity-title">Market Gap</h3>
+                        <div class="opportunity-score score-green">85%</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill progress-green" style="width: 85%;"></div>
+                    </div>
+                    <p class="insight-text">Limited Americanized gin options</p>
+                </div>
+                
+                <div class="opportunity-item">
+                    <div class="opportunity-header">
+                        <h3 class="opportunity-title">Demographics</h3>
+                        <div class="opportunity-score score-yellow">78%</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill progress-yellow" style="width: 78%;"></div>
+                    </div>
+                    <p class="insight-text">Strong millennial/Gen-Z presence</p>
+                </div>
+                
+                <div class="opportunity-item">
+                    <div class="opportunity-header">
+                        <h3 class="opportunity-title">Income Level</h3>
+                        <div class="opportunity-score score-yellow">72%</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill progress-yellow" style="width: 72%;"></div>
+                    </div>
+                    <p class="insight-text">Growing disposable income</p>
+                </div>
+                
+                <div class="opportunity-item">
+                    <div class="opportunity-header">
+                        <h3 class="opportunity-title">Craft Interest</h3>
+                        <div class="opportunity-score score-green">88%</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill progress-green" style="width: 88%;"></div>
+                    </div>
+                    <p class="insight-text">High craft spirit adoption</p>
+                </div>
+                
+                <div class="opportunity-item">
+                    <div class="opportunity-header">
+                        <h3 class="opportunity-title">Competition</h3>
+                        <div class="opportunity-score score-orange">65%</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill progress-orange" style="width: 65%;"></div>
+                    </div>
+                    <p class="insight-text">Moderate local competition</p>
+                </div>
+            </div>
+            
+            <div class="section-card">
+                <h2 class="section-title">Strategic Recommendations</h2>
+                <div class="recommendations-grid">
+                    <div class="recommendation-card green-insight">
+                        <div class="recommendation-header">
+                            <div class="recommendation-icon" style="background: rgba(34, 197, 94, 0.2);">
+                                <i data-lucide="zap" style="color: #22c55e;"></i>
+                            </div>
+                            <h3 class="recommendation-title" style="color: #22c55e;">Immediate Entry</h3>
+                        </div>
+                        <p class="recommendation-text">Limited local competition in Americanized gin segment. First-mover advantage available.</p>
+                    </div>
+                    
+                    <div class="recommendation-card blue-insight">
+                        <div class="recommendation-header">
+                            <div class="recommendation-icon" style="background: rgba(59, 130, 246, 0.2);">
+                                <i data-lucide="target" style="color: #3b82f6;"></i>
+                            </div>
+                            <h3 class="recommendation-title" style="color: #3b82f6;">Premium Positioning</h3>
+                        </div>
+                        <p class="recommendation-text">Target affluent millennials and Gen-Z consumers who value craft quality and unique flavors.</p>
+                    </div>
+                    
+                    <div class="recommendation-card purple-insight">
+                        <div class="recommendation-header">
+                            <div class="recommendation-icon" style="background: rgba(139, 92, 246, 0.2);">
+                                <i data-lucide="users" style="color: #8b5cf6;"></i>
+                            </div>
+                            <h3 class="recommendation-title" style="color: #8b5cf6;">Local Partnerships</h3>
+                        </div>
+                        <p class="recommendation-text">Partner with Houston bars and restaurants to build brand presence and educate consumers.</p>
+                    </div>
+                    
+                    <div class="recommendation-card amber-insight">
+                        <div class="recommendation-header">
+                            <div class="recommendation-icon" style="background: rgba(245, 158, 11, 0.2);">
+                                <i data-lucide="map-pin" style="color: #f59e0b;"></i>
+                            </div>
+                            <h3 class="recommendation-title" style="color: #f59e0b;">Distribution Focus</h3>
+                        </div>
+                        <p class="recommendation-text">Target premium liquor stores and craft cocktail establishments in key Houston neighborhoods.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section-card">
+                <h2 class="section-title">Market Entry Projections</h2>
+                <div class="projections-grid">
+                    <div class="projection-card green-insight">
+                        <div class="projection-year">Year 1</div>
+                        <div class="projection-title">Market Penetration</div>
+                        <div class="projection-subtitle">Establish brand presence</div>
+                        <div class="projection-details">
+                            <div class="projection-row">
+                                <span class="projection-label">Target Market Share:</span>
+                                <span>0.5-1%</span>
+                            </div>
+                            <div class="projection-row">
+                                <span class="projection-label">Est. Revenue:</span>
+                                <span>$200K-400K</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="projection-card blue-insight">
+                        <div class="projection-year">Year 2</div>
+                        <div class="projection-title">Growth Phase</div>
+                        <div class="projection-subtitle">Expand distribution</div>
+                        <div class="projection-details">
+                            <div class="projection-row">
+                                <span class="projection-label">Target Market Share:</span>
+                                <span>1.5-2.5%</span>
+                            </div>
+                            <div class="projection-row">
+                                <span class="projection-label">Est. Revenue:</span>
+                                <span>$600K-1M</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="projection-card purple-insight">
+                        <div class="projection-year">Year 3</div>
+                        <div class="projection-title">Market Position</div>
+                        <div class="projection-subtitle">Established presence</div>
+                        <div class="projection-details">
+                            <div class="projection-row">
+                                <span class="projection-label">Target Market Share:</span>
+                                <span>3-5%</span>
+                            </div>
+                            <div class="projection-row">
+                                <span class="projection-label">Est. Revenue:</span>
+                                <span>$1.2M-2M</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="executive-summary">
+                    <h3 class="summary-title">
+                        <i data-lucide="award"></i>
+                        Executive Summary
+                    </h3>
+                    <div class="summary-grid">
+                        <div>
+                            <p class="summary-text"><span class="summary-strong">Market Viability:</span> Houston presents a strong opportunity for gin market entry with a large, affluent, and diverse population that aligns with gin consumption demographics.</p>
+                            <p class="summary-text"><span class="summary-strong">Competitive Landscape:</span> Limited local competition in the Americanized gin segment provides first-mover advantage opportunities.</p>
+                        </div>
+                        <div>
+                            <p class="summary-text"><span class="summary-strong">Growth Potential:</span> Premium spirits market is expanding, with craft and boutique brands gaining significant traction among target demographics.</p>
+                            <p class="summary-text"><span class="summary-strong">Recommendation:</span> Proceed with market entry strategy focusing on premium positioning and local partnership development.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons and chart functionality after DOM loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Lucide icons
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+            
+            // Tab functionality
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetTab = button.getAttribute('data-tab');
+                    
+                    // Remove active class from all buttons and contents
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to clicked button and corresponding content
+                    button.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+            });
+            
+            // Chart data
+            const globalMarketData = {
+                labels: ['2024', '2025', '2026', '2027', '2028', '2030', '2032'],
+                datasets: [{
+                    label: 'Market Size ($B)',
+                    data: [17.5, 18.4, 19.4, 20.4, 21.5, 23.9, 26.8],
+                    borderColor: '#3B82F6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.3)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            };
+            
+            const usMarketData = {
+                labels: ['2024', '2025', '2026', '2027', '2028', '2029'],
+                datasets: [{
+                    label: 'US Market Value ($B)',
+                    data: [1.6, 1.61, 1.63, 1.65, 1.67, 1.7],
+                    borderColor: '#8B5CF6',
+                    backgroundColor: '#8B5CF6',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#8B5CF6',
+                    pointBorderColor: '#8B5CF6',
+                    pointRadius: 6
+                }]
+            };
+            
+            const ginTypesData = {
+                labels: ['London Dry Gin', 'Old Tom Gin', 'Navy Strength', 'Flavored/Botanical', 'Other'],
+                datasets: [{
+                    data: [45, 20, 15, 12, 8],
+                    backgroundColor: ['#2563eb', '#7c3aed', '#dc2626', '#059669', '#d97706'],
+                    borderWidth: 0
+                }]
+            };
+            
+            const demographicsData = {
+                labels: ['18-29', '30-39', '40-49', '50-59', '60+'],
+                datasets: [{
+                    label: 'Consumption %',
+                    data: [31, 28, 22, 15, 12],
+                    backgroundColor: '#8B5CF6',
+                    borderRadius: 4
+                }]
+            };
+            
+            // Chart configuration
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#F3F4F6'
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#9CA3AF'
+                        },
+                        grid: {
+                            color: '#374151'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: '#9CA3AF'
+                        },
+                        grid: {
+                            color: '#374151'
+                        }
+                    }
+                }
+            };
+            
+            const pieChartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            color: '#F3F4F6',
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    }
+                }
+            };
+            
+            // Initialize charts only if Chart.js is available
+            if (typeof Chart !== 'undefined') {
+                try {
+                    new Chart(document.getElementById('globalMarketChart'), {
+                        type: 'line',
+                        data: globalMarketData,
+                        options: chartOptions
+                    });
+                    
+                    new Chart(document.getElementById('usMarketChart'), {
+                        type: 'line',
+                        data: usMarketData,
+                        options: chartOptions
+                    });
+                    
+                    new Chart(document.getElementById('ginTypesChart'), {
+                        type: 'doughnut',
+                        data: ginTypesData,
+                        options: pieChartOptions
+                    });
+                    
+                    new Chart(document.getElementById('demographicsChart'), {
+                        type: 'bar',
+                        data: demographicsData,
+                        options: chartOptions
+                    });
+                } catch (error) {
+                    console.warn('Charts could not be initialized:', error);
+                }
+            } else {
+                console.warn('Chart.js library not loaded');
+            }
+        });
+    </script>
+</body>
+</html>

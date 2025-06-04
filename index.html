@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line, PieChart, Pie, Cell, ResponsiveContainer, AreaChart, Area } from 'recharts';
-import { TrendingUp, DollarSign, Users, MapPin, Award, ChevronRight } from 'lucide-react';
+import { TrendingUp, DollarSign, Users, MapPin, Award, ChevronRight, Target, Zap } from 'lucide-react';
 
 const HoustonGinMarketDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -70,6 +70,36 @@ const HoustonGinMarketDashboard = () => {
     { factor: 'Income Level', score: 72, description: 'Growing disposable income' },
     { factor: 'Craft Interest', score: 88, description: 'High craft spirit adoption' },
     { factor: 'Competition', score: 65, description: 'Moderate local competition' }
+  ];
+
+  const marketProjections = [
+    { 
+      year: 'Year 1', 
+      title: 'Market Penetration',
+      subtitle: 'Establish brand presence',
+      marketShare: '0.5-1%',
+      revenue: '$200K-400K',
+      color: 'from-green-500/10 to-teal-500/10',
+      borderColor: 'border-green-500/20'
+    },
+    { 
+      year: 'Year 2', 
+      title: 'Growth Phase',
+      subtitle: 'Expand distribution',
+      marketShare: '1.5-2.5%',
+      revenue: '$600K-1M',
+      color: 'from-blue-500/10 to-purple-500/10',
+      borderColor: 'border-blue-500/20'
+    },
+    { 
+      year: 'Year 3', 
+      title: 'Market Position',
+      subtitle: 'Established presence',
+      marketShare: '3-5%',
+      revenue: '$1.2M-2M',
+      color: 'from-purple-500/10 to-pink-500/10',
+      borderColor: 'border-purple-500/20'
+    }
   ];
 
   const tabs = [
@@ -150,6 +180,7 @@ const HoustonGinMarketDashboard = () => {
                       <Tooltip 
                         contentStyle={{ backgroundColor: '#1F2937', border: '1px solid #374151', borderRadius: '8px' }}
                         labelStyle={{ color: '#F3F4F6' }}
+                        formatter={(value) => [`$${value}B`, 'Market Size']}
                       />
                       <Area type="monotone" dataKey="value" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.3} strokeWidth={2} />
                     </AreaChart>
@@ -183,6 +214,7 @@ const HoustonGinMarketDashboard = () => {
                     <Tooltip 
                       contentStyle={{ backgroundColor: '#1F2937', border: '1px solid #374151', borderRadius: '8px' }}
                       labelStyle={{ color: '#F3F4F6' }}
+                      formatter={(value) => [`$${value}B`, 'Market Value']}
                     />
                     <Line type="monotone" dataKey="value" stroke="#8B5CF6" strokeWidth={3} dot={{ fill: '#8B5CF6', strokeWidth: 2, r: 6 }} />
                   </LineChart>
@@ -314,6 +346,7 @@ const HoustonGinMarketDashboard = () => {
                     <Tooltip 
                       contentStyle={{ backgroundColor: '#1F2937', border: '1px solid #374151', borderRadius: '8px' }}
                       labelStyle={{ color: '#F3F4F6' }}
+                      formatter={(value) => [`${value}%`, 'Consumption']}
                     />
                     <Bar dataKey="percentage" fill="#8B5CF6" radius={[4, 4, 0, 0]} />
                   </BarChart>
@@ -400,7 +433,7 @@ const HoustonGinMarketDashboard = () => {
                 <div className="p-6 rounded-lg bg-gradient-to-br from-green-500/10 to-teal-500/10 border border-green-500/20">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
-                      <ChevronRight className="w-4 h-4 text-green-400" />
+                      <Zap className="w-4 h-4 text-green-400" />
                     </div>
                     <h3 className="text-lg font-bold text-green-400">Immediate Entry</h3>
                   </div>
@@ -409,7 +442,7 @@ const HoustonGinMarketDashboard = () => {
                 <div className="p-6 rounded-lg bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/20">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                      <ChevronRight className="w-4 h-4 text-blue-400" />
+                      <Target className="w-4 h-4 text-blue-400" />
                     </div>
                     <h3 className="text-lg font-bold text-blue-400">Premium Positioning</h3>
                   </div>
@@ -418,7 +451,7 @@ const HoustonGinMarketDashboard = () => {
                 <div className="p-6 rounded-lg bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                      <ChevronRight className="w-4 h-4 text-purple-400" />
+                      <Users className="w-4 h-4 text-purple-400" />
                     </div>
                     <h3 className="text-lg font-bold text-purple-400">Local Partnerships</h3>
                   </div>
@@ -427,7 +460,7 @@ const HoustonGinMarketDashboard = () => {
                 <div className="p-6 rounded-lg bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center">
-                      <ChevronRight className="w-4 h-4 text-amber-400" />
+                      <MapPin className="w-4 h-4 text-amber-400" />
                     </div>
                     <h3 className="text-lg font-bold text-amber-400">Distribution Focus</h3>
                   </div>
@@ -439,19 +472,47 @@ const HoustonGinMarketDashboard = () => {
             <div className="bg-white/5 backdrop-blur-sm rounded-xl p-8 border border-white/10">
               <h2 className="text-2xl font-bold mb-6">Market Entry Projections</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="p-6 rounded-lg bg-gradient-to-br from-green-500/10 to-teal-500/10 border border-green-500/20 text-center">
-                  <div className="text-3xl font-bold text-green-400 mb-2">Year 1</div>
-                  <div className="text-lg font-semibold mb-2">Market Penetration</div>
-                  <div className="text-sm text-slate-300 mb-4">Establish brand presence</div>
-                  <div className="space-y-2 text-left">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-400">Target Market Share:</span>
-                      <span className="text-white">0.5-1%</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-400">Est. Revenue:</span>
-                      <span className="text-white">$200K-400K</span>
+                {marketProjections.map((projection, idx) => (
+                  <div key={idx} className={`p-6 rounded-lg bg-gradient-to-br ${projection.color} ${projection.borderColor} text-center`}>
+                    <div className="text-3xl font-bold text-green-400 mb-2">{projection.year}</div>
+                    <div className="text-lg font-semibold mb-2">{projection.title}</div>
+                    <div className="text-sm text-slate-300 mb-4">{projection.subtitle}</div>
+                    <div className="space-y-2 text-left">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-400">Target Market Share:</span>
+                        <span className="text-white">{projection.marketShare}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-slate-400">Est. Revenue:</span>
+                        <span className="text-white">{projection.revenue}</span>
+                      </div>
                     </div>
                   </div>
+                ))}
+              </div>
+              
+              <div className="mt-8 p-6 rounded-lg bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/20">
+                <h3 className="text-xl font-bold text-emerald-400 mb-4 flex items-center gap-3">
+                  <Award className="w-6 h-6" />
+                  Executive Summary
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-300">
+                  <div>
+                    <p className="mb-3"><strong className="text-white">Market Viability:</strong> Houston presents a strong opportunity for gin market entry with a large, affluent, and diverse population that aligns with gin consumption demographics.</p>
+                    <p className="mb-3"><strong className="text-white">Competitive Landscape:</strong> Limited local competition in the Americanized gin segment provides first-mover advantage opportunities.</p>
+                  </div>
+                  <div>
+                    <p className="mb-3"><strong className="text-white">Growth Potential:</strong> Premium spirits market is expanding, with craft and boutique brands gaining significant traction among target demographics.</p>
+                    <p className="mb-3"><strong className="text-white">Recommendation:</strong> Proceed with market entry strategy focusing on premium positioning and local partnership development.</p>
+                  </div>
                 </div>
-                <div className="p-6 rounded-lg bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/20 text-center">
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default HoustonGinMarketDashboard;
